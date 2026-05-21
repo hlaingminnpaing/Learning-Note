@@ -119,7 +119,9 @@ The --taint-analysis is the security one. "Taint" means "dirty data from the use
 ## 6. Improving Detection with Annotations
 
 Psalm may miss vulnerabilities when custom wrapper functions are used. Example — `db_query()` wraps `mysqli_query()`, but Psalm doesn't know it's a sink.
-
+Why Psalm missed a vulnerability
+The code uses a custom function db_query() that wraps mysqli_query(). Psalm only knows that mysqli_query() is dangerous — it doesn't know your custom db_query() is also dangerous.
+Fix: Add an annotation (a special comment) above the function to teach Psalm:
 ### Fix — Add annotations:
 
 ```php
@@ -132,6 +134,8 @@ function db_query($conn, $query){
     return $result;
 }
 ```
+@psalm-taint-sink sql $query → "Hey Psalm, treat the $query parameter as a dangerous SQL sink."
+@psalm-taint-specialize → "Treat each call to this function separately, don't merge them."
 
 | Annotation | Purpose |
 |---|---|
