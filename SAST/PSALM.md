@@ -94,6 +94,8 @@ ERROR: TaintedInclude - html/view.php:22:9
 | **Sink** | Dangerous function consuming data | `include()`, `mysqli_query()`, `eval()` |
 | **Taint flow** | Data path from source to sink | `$_GET['img']` → `include()` |
 
+The --taint-analysis is the security one. "Taint" means "dirty data from the user." Psalm traces user input from the source (where it enters) to the sink (where it does damage).
+
 **Vulnerability = Tainted data reaches a sink without sanitization.**
 
 ---
